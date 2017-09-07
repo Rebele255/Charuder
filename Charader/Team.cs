@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Charuder
+namespace Charader
 {
-    class Program
+    class Team
     {
-        static void Main(string[] args)
-        {
+        public string Name { get; set; }
 
+        public Team (string name)
+        {
+            Name = name;
         }
     }
 }
