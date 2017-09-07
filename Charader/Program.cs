@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Charuder
 {
     class Program
     {
+        static Stopwatch stopwatch = new Stopwatch();
+
         static void Main(string[] args)
         {
             Menu();
@@ -52,21 +55,41 @@ namespace Charuder
 
         private static void Play()
         {
-            //CreateTeams();
+            Console.Clear();
+
+            PlayScreen(CreateTeams());
 
         }
 
-        //private static void CreateTeams()
-        //{
-        //    Console.Write("How many teams are playing this awesome game? ");
-        //    int nrOfTeams = int.Parse(Console.ReadLine()); // på nåt sätt kolla så man skriver en siffra!
-        //    List < Team >
-        //    for (int i = 0; i < nrOfTeams; i++)
-        //    {
-        //        Console.WriteLine($"Name of team {i}: ");
-        //        Team team = new Team()
-        //        List<Team>
-        //    }
-        //}
+        private static void PlayScreen(List<Team> teamList)
+        {
+
+
+            for (int i = 0; i < teamList.Count; i++)
+            {
+                Console.WriteLine($"{teamList[i].Name}'s time to play!");
+
+                Console.WriteLine(Connection.ReadWordFromDatabase("Substantiv", 2));
+                //while () ; lägg in timer här
+                Console.ReadLine();
+                
+            }
+            
+        }
+
+        private static List<Team> CreateTeams()
+        {
+            Console.Write("How many teams are playing this awesome game? ");
+            int nrOfTeams = int.Parse(Console.ReadLine()); // på nåt sätt kolla så man skriver en siffra!
+            List<Team> teamList = new List<Team>();
+
+            for (int i = 0; i < nrOfTeams; i++)
+            {
+                Console.WriteLine($"Name of team {i+1}: ");
+                teamList.Add(new Team(Console.ReadLine()));
+                
+            }
+            return teamList;
+        }
     }
 }
