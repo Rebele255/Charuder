@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Timers;
 
 namespace Charuder
 {
     class Program
     {
         static Stopwatch stopwatch = new Stopwatch();
+        static Random random = new Random();
+        static List<Team> teamList = new List<Team>();
+        static int counter = 0;
 
         static void Main(string[] args)
         {
@@ -24,8 +28,6 @@ namespace Charuder
             Console.WriteLine("[1] Play Charuder");
             Console.WriteLine("[2] Add new words");
             Console.WriteLine("[3] Quit");
-            
-        
 
             int choice = int.Parse(Console.ReadLine());
             Console.WriteLine();
@@ -56,32 +58,77 @@ namespace Charuder
         private static void Play()
         {
             Console.Clear();
-
-            PlayScreen(CreateTeams());
+            CreateTeams();
+            CreateTimer();
 
         }
 
-        private static void PlayScreen(List<Team> teamList)
+        private static void CreateTimer()
         {
-
-
             for (int i = 0; i < teamList.Count; i++)
             {
-                Console.WriteLine($"{teamList[i].Name}'s time to play!");
 
-                Console.WriteLine(Connection.ReadWordFromDatabase("Substantiv", 2));
-                //while () ; lägg in timer här
-                Console.ReadLine();
+                Timer aTimer = new Timer();
+                aTimer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
+                aTimer.Interval = 10000;
+                aTimer.Enabled = true;
+                OnTimedEvent();
+                while (Console.Read() != 'q');
+                //Console.ReadLine();
                 
             }
             
         }
+        private static void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            Console.Clear();
+            PrintTeam();
+            CountDown();
+            GetNewWord();
+            
+        }
+        private static void OnTimedEvent()
+        {
+            Console.Clear();
+            PrintTeam();
+            CountDown();
+            GetNewWord();
+        }
+        private static void PrintTeam()
+        {
+            Console.WriteLine($"{teamList[counter].Name}'s time to play!");
+            counter++;
+        }
 
-        private static List<Team> CreateTeams()
+
+        // skall ej kunna trycka ngn knapp under tiden countdown görs
+        private static void CountDown()
+        {
+            Console.WriteLine("Countdown: ");
+            for (int a = 5; a > 0; a--)
+            {
+                Console.WriteLine(a);
+                System.Threading.Thread.Sleep(1000);
+            }
+            
+        }
+
+        private static void GetNewWord()
+        {
+            while (true)
+            {
+                int randomNr = random.Next(1, 10);
+
+                Console.WriteLine(Connection.ReadWordFromDatabase("Substantiv", randomNr));
+                Console.ReadLine();
+            }
+        }
+
+        private static void CreateTeams()
         {
             Console.Write("How many teams are playing this awesome game? ");
             int nrOfTeams = int.Parse(Console.ReadLine()); // på nåt sätt kolla så man skriver en siffra!
-            List<Team> teamList = new List<Team>();
+            
 
             for (int i = 0; i < nrOfTeams; i++)
             {
@@ -89,7 +136,7 @@ namespace Charuder
                 teamList.Add(new Team(Console.ReadLine()));
                 
             }
-            return teamList;
+            
         }
     }
 }
